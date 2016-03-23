@@ -29,7 +29,8 @@ Ext.define('RowShareApp.view.Viewport', {
             xtype: 'textfield',
             fieldLabel: 'RowShare list id',
             reference: 'listIdTextField',
-            value: '0734e25ecc614f46a9815cda57c560c2', // Default value (debug only)
+            value: '0734e25ecc614f46a9815cda57c560c2',
+            // Default value (debug only)
             width: 350,
             allowBlank: false
         }, 
@@ -48,9 +49,14 @@ Ext.define('RowShareApp.view.Viewport', {
     },
     {
         xtype: 'panel',
+        layout: {
+            type: 'vbox',
+            align: 'stretch'
+        },
         items: [{
             xtype: 'RowShareGrid',
-            reference: 'rowShareGrid'
+            reference: 'rowShareGrid',
+            height: 800
         }]
     }
     ],

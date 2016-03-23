@@ -18,7 +18,7 @@ Ext.application({
         'ColumnModel'
     ],
     views: [
-        'Container',
+        'Viewport',
         'RowShareApp.view.RowShareGrid'
     ],
     controllers: [],
@@ -29,7 +29,7 @@ Ext.application({
         Ext.Ajax.cors = true;
         Ext.Ajax.useDefaultXhrHeader = false;
         
-        Ext.create('RowShareApp.view.Container', { renderTo: Ext.getBody() });
+        Ext.create('RowShareApp.view.Viewport', { renderTo: Ext.getBody() });
         Ext.theme = {
             name: ""
         };

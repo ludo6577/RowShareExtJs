@@ -1,13 +1,13 @@
-var gridId = gridId || 0;
+var gridId = (gridId + 1) || 0;
 
 Ext.define('RowShareApp.view.RowShareGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.RowShareGrid',
     
-    enableLocking: true,
-    stateId: 'RowShareGridStateId',
+    stateId: 'RowShareGrid' + gridId,
     stateful: true,
-    
+    enableLocking: true,
+
     /*
      *          ######### PRIVATE #########
      */
@@ -48,14 +48,49 @@ Ext.define('RowShareApp.view.RowShareGrid', {
      */
     afterInit: function() {},
     
-    
+
+    /*
+     *  ### PUBLIC FUNCTIONS ###
+     */
+     /**
+      * Add a column (in the model and in the store)
+      */
     addColumn: function(columnConf) {
         var me = this;
         me.addModelField(columnConf);
         me.addGridColumn(columnConf);
     },
     
-    getColumnType(columnConf){
+    /*
+     *  Load the grid
+     */
+    load: function(listId) {
+        var me = this;
+        
+        // Create a model            
+        var model = Ext.define('GridModel' + gridId, {
+            extend: 'Ext.data.Model',
+            fields: me.fields
+        });
+        
+        // Create the store from the model
+        var store = me.getGridStore(model);
+
+        // Reconfigure the grid with the new store then load the store
+        me.reconfigure(store, me.gridColumns);
+        store.load({
+            params: {
+                'listId': listId
+            }
+        });
+    },
+
+
+    /*
+     *  ### PRIVATE FUNCTIONS ###
+     */
+    // Get the column type
+    getColumnType: function(columnConf){
         var colType = columnConf.DataType;
         if (colType === 0) {
             return  'text';
@@ -72,8 +107,8 @@ Ext.define('RowShareApp.view.RowShareGrid', {
         }
         return 'auto';
     },
-        
-    getFilterType(columnConf){
+    // Get the filter type
+    getFilterType: function(columnConf){
         var colType = columnConf.DataType;
         if (colType === 0) {
             return  'string';
@@ -90,7 +125,7 @@ Ext.define('RowShareApp.view.RowShareGrid', {
         }
         return 'auto';
     },
-    
+
     addModelField: function(columnConf) {
         var me = this;
         
@@ -102,7 +137,7 @@ Ext.define('RowShareApp.view.RowShareGrid', {
             name: columnConf.Id,
         });
     },
-
+    
     addGridColumn: function(columnConf) {
         var me = this;
         var fieldType = me.getColumnType(columnConf);
@@ -134,31 +169,9 @@ Ext.define('RowShareApp.view.RowShareGrid', {
     
     
     /*
-     *  Load the grid
+     *  Return a store created from a model
      */
-    load: function(listId) {
-        var me = this;
-        
-        // Create a model            
-        var model = Ext.define('GridModel' + (gridId++), {
-            extend: 'Ext.data.Model',
-            fields: me.fields
-        });
-        
-        var store = me.getStore(model);
-        me.reconfigure(store, me.gridColumns);
-        store.load({
-            params: {
-                'listId': listId
-            }
-        });
-    },
-    
-    
-    /*
-     *  Return a normal store
-     */
-    getStore: function(model) {
+    getGridStore: function(model) {
         return Ext.create('Ext.data.Store', {
             model: model,
             storeId: 'ColumnStore' + gridId,
